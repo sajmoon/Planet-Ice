@@ -1,70 +1,57 @@
 package planetIce.im;
 
 /**
-
+ * 
  * Example Client program using TCP.
-
  */
-
- 
 
 public class Tclient {
 
- 
+	final static String serverIPname = "localhost"; // server IP name
 
-      final static  String    serverIPname = "minnie.williams.org";     // server IP name
+	final static int serverPort = 3456; // server port number
 
-      final static  int       serverPort   = 3456;                      // server port number
+	public static void main(String args[]) {
 
- 
+		java.net.Socket sock = null; // Socket object for communicating
 
-public static void main(String args[]) {
+		java.io.PrintWriter pw = null; // socket output to server
 
-      java.net.Socket         sock = null;                              // Socket object for communicating
+		java.io.BufferedReader br = null; // socket input from server
 
-      java.io.PrintWriter     pw   = null;                              // socket output to server
+		try {
 
-      java.io.BufferedReader  br   = null;                              // socket input from server
+			sock = new java.net.Socket(serverIPname, serverPort); // create  socket and connect
 
- 
+			pw = new java.io.PrintWriter(sock.getOutputStream(), true); // create reader and writer
 
-      try {
+			br = new java.io.BufferedReader(new java.io.InputStreamReader(sock
+					.getInputStream()));
 
-            sock = new java.net.Socket(serverIPname,serverPort);       // create socket and connect
+			System.out.println("Connected to Server");
 
-            pw   = new java.io.PrintWriter(sock.getOutputStream(), true);  // create reader and writer
+			pw.println("Message from the client"); // send msg to the server
 
-            br   = new java.io.BufferedReader(new java.io.InputStreamReader(sock.getInputStream()));
+			System.out.println("Sent message to server");
 
-            System.out.println("Connected to Server");
+			String answer = br.readLine(); // get data from the server
 
- 
+			System.out.println("Response from the server >" + answer);
 
-            pw.println("Message from the client");                      // send msg to the server
+			pw.close(); // close everything
 
-            System.out.println("Sent message to server");
+			br.close();
 
-            String answer = br.readLine();                              // get data from the server
+			sock.close();
 
-            System.out.println("Response from the server >" + answer);
+		} catch (Throwable e) {
 
- 
+			System.out.println("Error " + e.getMessage());
 
-            pw.close();                                                 // close everything
+			e.printStackTrace();
 
-            br.close();
+		}
 
-            sock.close();
-
-      } catch (Throwable e) {
-
-            System.out.println("Error " + e.getMessage());
-
-            e.printStackTrace();
-
-      }
+	}
 
 }
-
-}
-

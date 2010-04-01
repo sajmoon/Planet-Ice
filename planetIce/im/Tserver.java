@@ -1,75 +1,63 @@
 package planetIce.im;
 
 /**
-
+ * 
  * Example Server program using TCP.
-
  */
-
- 
 
 public class Tserver {
 
- 
+	final static int serverPort = 3456; // server port number
 
-      final static      int   serverPort   = 3456;                      // server port number
+	public static void main(String args[]) {
 
- 
+		java.net.ServerSocket sock = null; // original server socket
 
-public static void main(String args[]) {
+		java.net.Socket clientSocket = null; // socket created by accept
 
-      java.net.ServerSocket   sock = null;                              // original server socket
+		java.io.PrintWriter pw = null; // socket output stream
 
-      java.net.Socket         clientSocket = null;                      // socket created by accept
+		java.io.BufferedReader br = null; // socket input stream
 
-      java.io.PrintWriter     pw   = null;                              // socket output stream
+		try {
 
-      java.io.BufferedReader  br   = null;                              // socket input stream
+			sock = new java.net.ServerSocket(serverPort); // create socket and
+															// bind to port
 
- 
+			System.out.println("waiting for client to connect");
 
-      try {
+			clientSocket = sock.accept(); // wait for client to connect
 
-            sock = new java.net.ServerSocket(serverPort);               // create socket and bind to port
+			System.out.println("client has connected");
 
-            System.out.println("waiting for client to connect");
+			pw = new java.io.PrintWriter(clientSocket.getOutputStream(), true);
 
-            clientSocket = sock.accept();                               // wait for client to connect
+			br = new java.io.BufferedReader(
 
-            System.out.println("client has connected");
+			new java.io.InputStreamReader(clientSocket.getInputStream()));
 
-            pw   = new java.io.PrintWriter(clientSocket.getOutputStream(),true);
+			String msg = br.readLine(); // read msg from client
 
-            br   = new java.io.BufferedReader(
+			System.out.println("Message from the client >" + msg);
 
-new java.io.InputStreamReader(clientSocket.getInputStream()));
+			pw.println("Got it!"); // send msg to client
 
- 
+			pw.close(); // close everything
 
-            String msg = br.readLine();                                 // read msg from client
+			br.close();
 
-            System.out.println("Message from the client >" + msg);
+			clientSocket.close();
 
-            pw.println("Got it!");                                      // send msg to client
+			sock.close();
 
- 
+		} catch (Throwable e) {
 
-            pw.close();                                                 // close everything
+			System.out.println("Error " + e.getMessage());
 
-            br.close();
+			e.printStackTrace();
 
-            clientSocket.close();
+		}
 
-            sock.close();
-
-      } catch (Throwable e) {
-
-            System.out.println("Error " + e.getMessage());
-
-            e.printStackTrace();
-
-      }
-
-}
+	}
 
 }
