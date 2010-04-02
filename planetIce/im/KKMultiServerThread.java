@@ -29,44 +29,48 @@ package planetIce.im;
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */ 
+ */
 
 import java.net.*;
 import java.io.*;
 
 public class KKMultiServerThread extends Thread {
-    private Socket socket = null;
+	private Socket socket = null;
 
-    public KKMultiServerThread(Socket socket) {
-	super("KKMultiServerThread");
-	this.socket = socket;
-    }
-
-    public void run() {
-
-	try {
-	    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-	    BufferedReader in = new BufferedReader(
-				    new InputStreamReader(
-				    socket.getInputStream()));
-
-	    String inputLine, outputLine;
-	    KnockKnockProtocol kkp = new KnockKnockProtocol();
-	    outputLine = kkp.processInput(null);
-	    out.println(outputLine);
-
-	    while ((inputLine = in.readLine()) != null) {
-		outputLine = kkp.processInput(inputLine);
-		out.println(outputLine);
-		if (outputLine.equals("Bye"))
-		    break;
-	    }
-	    out.close();
-	    in.close();
-	    socket.close();
-
-	} catch (IOException e) {
-	    e.printStackTrace();
+	public KKMultiServerThread(Socket socket) {
+		super("KKMultiServerThread");
+		this.socket = socket;
 	}
-    }
+
+	public void run() {
+
+		try {
+			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket
+					.getInputStream()));
+
+			String inputLine, outputLine;
+			outputLine = "OK";
+			inputLine = "";
+			inputLine = in.readLine();
+			System.out.println("Client: " + inputLine);
+			out.println(outputLine);
+
+			while ((inputLine = in.readLine()) != null) {
+
+				System.out.println("From Client: " + inputLine);
+				outputLine = "Copy " + inputLine + ".";
+				out.println(outputLine);
+				System.out.println("To Client: " + outputLine);
+				if (outputLine.equals("Bye"))
+					break;
+			}
+			out.close();
+			in.close();
+			socket.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -39,6 +39,7 @@ public class KKMultiServer {
         ServerSocket serverSocket = null;
         boolean listening = true;
 
+        System.out.println("Starting server..");
         try {
             serverSocket = new ServerSocket(4444);
         } catch (IOException e) {
