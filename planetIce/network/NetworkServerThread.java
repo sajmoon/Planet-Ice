@@ -22,13 +22,15 @@ public class NetworkServerThread extends Thread{
 					.getInputStream()));
 
 			String inputLine, outputLine;
-			NetworkProtocollInterface actions = new NetworkProtocoll();
+			NetworkProtocoll actions = new NetworkProtocoll();
 			// outputLine = actions.processInput(null);
 			// out.println(outputLine);
 
 			while ((inputLine = in.readLine()) != null) {
+				System.out.println("Client: " + inputLine );
 				outputLine = actions.processInput(inputLine);
 				out.println(outputLine);
+				System.out.println("Server: " + outputLine);
 				if (outputLine.equals("exit"))
 					break;
 			}

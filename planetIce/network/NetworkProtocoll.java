@@ -1,6 +1,6 @@
 package planetIce.network;
 
-public class NetworkProtocoll implements NetworkProtocollInterface  {
+public class NetworkProtocoll  {
 	 	
     /* (non-Javadoc)
 	 * @see planetIce.network.NetworkProtocollInterface#processInput(java.lang.String)
