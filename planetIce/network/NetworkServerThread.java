@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class NetworkServerThread extends Thread{
+public class NetworkServerThread implements Runnable {
 	private Socket socket = null;
 
 	public NetworkServerThread(Socket socket) {

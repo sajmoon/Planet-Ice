@@ -1,6 +1,6 @@
 package planetIce;
 
-import planetIce.network.NetworkServer;
+import planetIce.network.MultiThreadedServer;
 
 public class PlanetIceServer {
 
@@ -11,11 +11,17 @@ public class PlanetIceServer {
 		// TODO Auto-generated method stub
 		System.out.println("PlanetIceServer");
 		System.out.println("Starting..");
+		MultiThreadedServer server = null;
+		int port = 1234;
 		try {
-			new NetworkServer().start();
+			 server = new MultiThreadedServer(port);
+			Thread t = new Thread(server);
+			t.start();
+			System.out.println("Server up and running in a fucking thread.");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		System.out.println("Done..");
 
 	}
