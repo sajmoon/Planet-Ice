@@ -1,34 +1,148 @@
 package planetIce.test;
 
+import java.net.ProtocolException;
+
 import junit.framework.TestCase;
-import planetIce.network.MultiThreadedServer;
-import planetIce.network.NetworkClient;
+import planetIce.Game.Game;
+import planetIce.network.NetworkClientThread;
+import planetIce.network.NetworkServerMultiThreaded;
 
 public class TestNetwork extends TestCase {
 
-	public void testServer1() {
-		System.out.println("Start Server");
-		
-		MultiThreadedServer server = new MultiThreadedServer(1232);
-		Thread t = new Thread(server);
-		t.start();
-		System.out.println( "Server Text" + server.isStopped() );
+    int port = 2224;
 
-	/*	try {
-		    Thread.sleep(20 * 1000);
-		} catch (InterruptedException e) {
-		    e.printStackTrace();
-		}
-		System.out.println("Stopping Server");
-		server.stop(); */
+    /**
+     * Kollar typ bara att den går att starta.
+     */
+    public void testServer(int fail) {
+	Game game = new Game();
+	NetworkServerMultiThreaded server = new NetworkServerMultiThreaded(port, game);
+	Thread t = new Thread(server);
+	t.start();
 
-		//server.run();
-		System.out.println("Start a client");
-		NetworkClient client1 = new NetworkClient(1232);
+	assertTrue(t.isAlive());
+	assertEquals(server.getServerPort(), port);
 
-		client1.test();
-		
-		//new Thread(client1).start();
-	
+	// server.stop();
+    }
+
+    /**
+     * Kräver att det körs en server redan. Får det inte att fungera annars ;/
+     */
+    public void testServer1() {
+	port++;
+	System.out.println("Start Server");
+	Game game = new Game();
+	NetworkServerMultiThreaded server = new NetworkServerMultiThreaded(port,game);
+	Thread t = new Thread(server);
+	t.start();
+	assertTrue(!server.isStopped());
+
+	try {
+	    Thread.sleep(50);
+	} catch (InterruptedException e1) {
+	    // TODO Auto-generated catch block
+	    e1.printStackTrace();
 	}
+
+	// server.run();
+	System.out.println("Start a client");
+	NetworkClientThread client1 = new NetworkClientThread(port);
+
+	Thread t1 = new Thread(client1);
+
+	t1.start();
+
+	try {
+	    client1.send("Test");
+
+	} catch (ProtocolException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+
+	System.out.println("Stopping Server");
+	server.stop();
+
+    }
+
+    /**
+     * Testa att skicka "Ping?" Svaret ska vara "Pong"
+     */
+    public void testServerPing() {
+	port += 20;
+	System.out.println("Start Server");
+	Game game = new Game();
+	NetworkServerMultiThreaded server = new NetworkServerMultiThreaded(port,game);
+	Thread t = new Thread(server);
+	t.start();
+	assertTrue(!server.isStopped());
+
+	try {
+	    Thread.sleep(50);
+	} catch (InterruptedException e1) {
+	    // TODO Auto-generated catch block
+	    e1.printStackTrace();
+	}
+
+	// server.run();
+	System.out.println("Start a client");
+	NetworkClientThread client1 = new NetworkClientThread(port);
+
+	Thread t1 = new Thread(client1);
+
+	t1.start();
+
+	assertEquals(client1.sendRequestToServer("Ping?"), "Pong!");
+
+	System.out.println("Stopping Server");
+	server.stop();
+    }
+
+    /**
+     * Eftersom implementerade smarta protocol etc är överskattat så kör vi på att allt som skickas in skickas tillbaka
+     * som Mirror: ( input ) Testa det på många kommandon irad.
+     */
+    public void testServerManyCommands() {
+	port += 10;
+	System.out.println("Start Server");
+	Game game = new Game();
+	NetworkServerMultiThreaded server = new NetworkServerMultiThreaded(port,game);
+	Thread t = new Thread(server);
+	t.start();
+	assertTrue(!server.isStopped());
+
+	try {
+	    Thread.sleep(50);
+	} catch (InterruptedException e1) {
+	    // TODO Auto-generated catch block
+	    e1.printStackTrace();
+	}
+
+	String[] text = new String[7];
+	text[0] = "Första";
+	text[1] = "Andra";
+	text[2] = "Tredje";
+	text[3] = "Fjärde";
+	text[4] = "Femte";
+	text[5] = "Sex";
+	text[6] = "Sjuuuu";
+
+	// server.run();
+	System.out.println("Start a client");
+	NetworkClientThread client1 = new NetworkClientThread(port);
+
+	Thread t1 = new Thread(client1);
+
+	t1.start();
+
+	for (int i = 0; i < text.length; i++) {
+	    assertEquals(client1.sendRequestToServer(text[i]), "Mirror: ("
+		    + text[i] + ")");
+	}
+
+	System.out.println("Stopping Server");
+	server.stop();
+
+    }
 }

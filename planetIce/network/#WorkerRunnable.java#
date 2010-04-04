@@ -1,0 +1,113 @@
+package planetIce.network;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.ProtocolException;
+import java.net.Socket;
+
+/**
+
+ */
+public class WorkerRunnable implements Runnable {
+
+    private static boolean online = true;
+    protected Socket clientSocket = null;
+    protected String serverText = null;
+    PrintWriter output;
+    BufferedReader input;
+    NetworkProtocol actionProtocol;
+
+    public WorkerRunnable(Socket clientSocket, String serverText,
+	    NetworkProtocol actions) {
+	this.clientSocket = clientSocket;
+	this.serverText = serverText;
+	actionProtocol = actions;
+    }
+
+    /**
+     * @param text
+     * @throws java.net.ProtocolException
+     */
+    public void send(String text) throws java.net.ProtocolException {
+	int checksum = planetIce.network.Validation.getChecksum(text);
+
+	output.write(text);
+	try {
+	    String serverMessage = input.readLine();
+	    int serverChecksum = Integer.parseInt(serverMessage);
+	    if (serverChecksum != checksum) {
+		throw new ProtocolException("Not all data reached the server");
+	    }
+
+	} catch (Exception e) {
+	    System.err.println("NetworkClientThread.sendToServer(String): "
+		    + e.toString());
+	    e.printStackTrace();
+	}
+    }
+
+    /**
+     * Läser text skickat från clienten.
+     * 
+     * @return textten vi ska få från clienten.
+     */
+    public String read() {
+	try {
+	    System.out.println("WorkerRunnable.read()..");
+	    String inputText = input.readLine();
+	    System.out.println("Got text bitch!");
+	    output.write(planetIce.network.Validation.getChecksum(inputText));
+	    return input.readLine();
+	} catch (IOException e) {
+	    System.err
+		    .println("ERR. NetworkClientThread. sendToServer(String):");
+	    System.err.println("ERR. " + e.toString());
+	    e.printStackTrace();
+	}
+	return null;
+    }
+
+    public void readRequest() {
+	System.out.println("WorkerRunnable.readRequest()..");
+	
+	try {
+	    String inData = read();
+	    send(actionProtocol.act(inData));
+	} catch (ProtocolException e) {
+	    // TODO Auto-generated catch block
+	    System.out.println("WorkerRunnable.readRequest() " + e.toString());
+	    e.printStackTrace();
+	}
+    }
+
+    public void run() {
+	try {
+	    output = new PrintWriter(clientSocket.getOutputStream(), true);
+	    input = new BufferedReader(new InputStreamReader(clientSocket
+		    .getInputStream()));
+
+	    String inText;
+	    //
+	    System.out.println("Server startad. In Run(). do a while.");
+	    //(inText = input.readLine()) != null
+	    while (online) {
+		System.out.println("WorkerRunnable.run() while { ... }");
+		readRequest();
+	    }
+
+	    output.close();
+	    input.close();
+	    System.out
+		    .println("Server: Request processed. Server connection closed.");
+
+	} catch (IOException e) {
+	    // report exception somewhere.
+	    System.out.println("Error inte workerRunnable.. " + e.toString());
+	    e.printStackTrace();
+	}
+    }
+}
