@@ -30,10 +30,15 @@ public class PlanetIceClient {
 		System.out.println("What? Doesnt work?");
 	    }
 
-	    int r = new Random().nextInt(10);
+	    for (int i = 0; i < 10; i++) {
 
-	    System.out.println( client.sendRequestToServer("move 1 " + r) );
+		Thread.sleep(4000);
+		int r1 = new Random().nextInt(3);
+		int r2 = new Random().nextInt(3);
 
+		//System.out.println(client.sendRequestToServer("move "+  r1 + " " + r2));
+		client.send("move "+  r1 + " " + r2);
+	    }
 	    /**
 	     * System.out.println(client.sendRequestToServer("Hello.."));
 	     * System.out.println(client.sendRequestToServer("TEST"));

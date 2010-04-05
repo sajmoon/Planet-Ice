@@ -11,7 +11,7 @@ import planetIce.Game.Player;
 
 public class NetworkServerThread implements Runnable {
 
-    private boolean online = true; //stänger denna tråd om du sätter den till false
+    private boolean online = true; // stänger denna tråd om du sätter den till false
     protected Socket clientSocket = null;
     protected String serverText = null;
     protected int serverID = 0;
@@ -30,7 +30,7 @@ public class NetworkServerThread implements Runnable {
     public int getID() {
 	return serverID;
     }
-    
+
     /**
      * Läser text skickat från clienten.
      * 
@@ -69,28 +69,30 @@ public class NetworkServerThread implements Runnable {
 		// Stäng denna tråd typ
 		online = false;
 	    } else {
-		send(actionProtocol.act(inData,serverID) );
+		send(actionProtocol.act(inData, serverID));
 	    }
 	} catch (ProtocolException e) {
-	    System.out.println("NetworkServerThread.readRequest() " + e.toString());
+	    System.out.println("NetworkServerThread.readRequest() "
+		    + e.toString());
 	    e.printStackTrace();
 	}
     }
-    
+
     private void removeFromGame() {
 	System.out.println("Remove user from player list");
-	actionProtocol.removeFromGame( serverID ) ;
+	actionProtocol.removeFromGame(serverID);
     }
 
     private void joinGame() {
 	System.out.println("add user to player list");
-	actionProtocol.joinGame( new Player("Player " + serverID, serverID) );
-	
+	actionProtocol.joinGame(new Player("Player " + serverID, serverID));
+
     }
-    
+
     public void run() {
 	try {
-	    System.out.println("NetworkServerThread ( " +  this.serverText + " ). New Client Connected" );
+	    System.out.println("NetworkServerThread ( " + this.serverText
+		    + " ). New Client Connected");
 	    output = new PrintWriter(clientSocket.getOutputStream(), true);
 	    input = new BufferedReader(new InputStreamReader(clientSocket
 		    .getInputStream()));
@@ -109,7 +111,8 @@ public class NetworkServerThread implements Runnable {
 	    removeFromGame();
 	    output.close();
 	    input.close();
-	    System.out.println("NetworkServerThread ( " +  this.serverText + " ) : Requests processed. Server connection closed. ");
+	    System.out.println("NetworkServerThread ( " + this.serverText
+		    + " ) : Requests processed. Server connection closed. ");
 
 	} catch (IOException e) {
 	    // report exception somewhere.
@@ -120,28 +123,32 @@ public class NetworkServerThread implements Runnable {
 
     /**
      * Send a message.
+     * 
      * @param text
      * @throws java.net.ProtocolException
      */
     public void send(String text) throws java.net.ProtocolException {
-	
+
 	if (text == null) {
-	    System.out.println("NetworkServerThread().send() no text. text == null");
-	}
-	String checksum = planetIce.network.Validation.getChecksum(text);
+	    System.err
+		    .println("NetworkServerThread().send() no text. text == null");
+	} else {
+	    String checksum = planetIce.network.Validation.getChecksum(text);
 
-	output.println(text);
-	try {
-	    String serverMessage = input.readLine();
-	    String serverChecksum = serverMessage;
-	    if (!serverChecksum.equals(checksum)) {
-		throw new ProtocolException("Not all data reached the server");
+	    output.println(text);
+	    try {
+		String serverMessage = input.readLine();
+		String serverChecksum = serverMessage;
+		if (!serverChecksum.equals(checksum)) {
+		    throw new ProtocolException(
+			    "Not all data reached the server");
+		}
+
+	    } catch (Exception e) {
+		System.err.println("NetworkClientThread.sendToServer(String): "
+			+ e.toString());
+		e.printStackTrace();
 	    }
-
-	} catch (Exception e) {
-	    System.err.println("NetworkClientThread.sendToServer(String): "
-		    + e.toString());
-	    e.printStackTrace();
 	}
     }
 }
