@@ -4,7 +4,7 @@ import planetIce.Game.Game;
 import planetIce.Game.Player;
 
 public class PlanetIceServerProtocol implements NetworkProtocol {
-    Game game;
+    static Game game; //static? Verkar fungera bättre om den är så iaf.
     public PlanetIceServerProtocol( Game inputGame ) {
 	game = inputGame;
     }
@@ -15,10 +15,11 @@ public class PlanetIceServerProtocol implements NetworkProtocol {
 	    // TODO Auto-generated method stub
 	    if (input == null) {
 	        // klienten kopplade ifrån.
+		// kan det finnas andra fall?
 	        return null;
 	    } else if (input.equals("Ping?")) {
 	        // För att testa connections. Typ ;) Och den är jävligt söt att ha.
-		//System.out.println("Lastpinged: " + game.getLastPing(ID));
+		//kanske kunde använda game.act?
 		game.clientPinged(ID);
 	        return "Pong!";
 	    } else if (game.hasCommand( input )) {
@@ -29,8 +30,12 @@ public class PlanetIceServerProtocol implements NetworkProtocol {
 		
 	        game.act(input.split(" "), ID);
 	    } else if(input.equals("help")) {
+		//borde finnas en i game act också. Så denna är mer "extra ifall den inte finns.."
+		//Samma lösning kanske går att fixa med ping? Pong!
 	        return "You dont need no help biaatch..";  
 	    } else {
+		//Denna function att den returnerar det den fått vara bara till för att testa netfunkunaltit
+		// i början. Kanske borde ta bort den nu.)
 	        return "Mirror: (" + input + ")";
 	    }
 	} catch (Exception e) {

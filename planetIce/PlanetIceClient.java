@@ -2,6 +2,7 @@ package planetIce;
 
 import java.util.Random;
 
+import planetIce.GUI.GUI;
 import planetIce.network.NetworkClientThread;
 
 public class PlanetIceClient {
@@ -14,7 +15,7 @@ public class PlanetIceClient {
 
 	Networks();
 
-	// Graphics();
+	Graphics();
     }
 
     public void Networks() {
@@ -24,7 +25,7 @@ public class PlanetIceClient {
 
 	// Testkod-ish
 	try {
-	    if (client.sendRequestToServer("Ping?").equals("Pong!")) {
+	    if (client.sendRequest("Ping?").equals("Pong!")) {
 		System.out.println("Connected");
 	    } else {
 		System.out.println("What? Doesnt work?");
@@ -32,13 +33,14 @@ public class PlanetIceClient {
 
 	    for (int i = 0; i < 10; i++) {
 
-		Thread.sleep(4000);
+		Thread.sleep(100);
 		int r1 = new Random().nextInt(3);
 		int r2 = new Random().nextInt(3);
 
-		//System.out.println(client.sendRequestToServer("move "+  r1 + " " + r2));
-		client.send("move "+  r1 + " " + r2);
+		// System.out.println(client.sendRequestToServer("move "+ r1 + " " + r2));
+		client.send("move " + r1 + " " + r2);
 	    }
+
 	    /**
 	     * System.out.println(client.sendRequestToServer("Hello.."));
 	     * System.out.println(client.sendRequestToServer("TEST"));
@@ -58,6 +60,7 @@ public class PlanetIceClient {
      * @deprecated
      */
     public void Graphics() {
+	GUI g = new GUI();
 
     }
 

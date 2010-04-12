@@ -16,7 +16,8 @@ public class TestNetwork extends TestCase {
      */
     public void testServer(int fail) {
 	Game game = new Game();
-	NetworkServerMultiThreaded server = new NetworkServerMultiThreaded(port, game);
+	NetworkServerMultiThreaded server = new NetworkServerMultiThreaded(
+		port, game);
 	Thread t = new Thread(server);
 	t.start();
 
@@ -33,7 +34,8 @@ public class TestNetwork extends TestCase {
 	port++;
 	System.out.println("Start Server");
 	Game game = new Game();
-	NetworkServerMultiThreaded server = new NetworkServerMultiThreaded(port,game);
+	NetworkServerMultiThreaded server = new NetworkServerMultiThreaded(
+		port, game);
 	Thread t = new Thread(server);
 	t.start();
 	assertTrue(!server.isStopped());
@@ -56,7 +58,7 @@ public class TestNetwork extends TestCase {
 	try {
 	    client1.send("Test");
 
-	} catch (ProtocolException e) {
+	} catch (Exception e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
@@ -73,7 +75,8 @@ public class TestNetwork extends TestCase {
 	port += 20;
 	System.out.println("Start Server");
 	Game game = new Game();
-	NetworkServerMultiThreaded server = new NetworkServerMultiThreaded(port,game);
+	NetworkServerMultiThreaded server = new NetworkServerMultiThreaded(
+		port, game);
 	Thread t = new Thread(server);
 	t.start();
 	assertTrue(!server.isStopped());
@@ -93,7 +96,7 @@ public class TestNetwork extends TestCase {
 
 	t1.start();
 
-	assertEquals(client1.sendRequestToServer("Ping?"), "Pong!");
+	assertEquals(client1.sendRequest("Ping?"), "Pong!");
 
 	System.out.println("Stopping Server");
 	server.stop();
@@ -107,7 +110,8 @@ public class TestNetwork extends TestCase {
 	port += 10;
 	System.out.println("Start Server");
 	Game game = new Game();
-	NetworkServerMultiThreaded server = new NetworkServerMultiThreaded(port,game);
+	NetworkServerMultiThreaded server = new NetworkServerMultiThreaded(
+		port, game);
 	Thread t = new Thread(server);
 	t.start();
 	assertTrue(!server.isStopped());
@@ -137,9 +141,40 @@ public class TestNetwork extends TestCase {
 	t1.start();
 
 	for (int i = 0; i < text.length; i++) {
-	    assertEquals(client1.sendRequestToServer(text[i]), "Mirror: ("
-		    + text[i] + ")");
+	    assertEquals(client1.sendRequest(text[i]), "Mirror: (" + text[i]
+		    + ")");
 	}
+
+	System.out.println("Stopping Server");
+	server.stop();
+    }
+
+    public void test4() {
+	port += 100;
+	System.out.println("Start Server");
+	Game game = new Game();
+	NetworkServerMultiThreaded server = new NetworkServerMultiThreaded(
+		port, game);
+	Thread t = new Thread(server);
+	t.start();
+	assertTrue(!server.isStopped());
+
+	try {
+	    Thread.sleep(50);
+	} catch (InterruptedException e1) {
+	    // TODO Auto-generated catch block
+	    e1.printStackTrace();
+	}
+
+	// server.run();
+	System.out.println("Start a client");
+	NetworkClientThread client1 = new NetworkClientThread(port);
+
+	Thread t1 = new Thread(client1);
+
+	t1.start();
+
+	assertEquals(client1.sendRequest("test2"), "Mirror: (test2)");
 
 	System.out.println("Stopping Server");
 	server.stop();

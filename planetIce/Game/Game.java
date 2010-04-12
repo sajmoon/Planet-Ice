@@ -23,14 +23,31 @@ public class Game implements Runnable {
      */
     public String act(String[] input, int ID) {
 	if (input[0].equals("move")) {
-	    // move 1 2
-	    // går 1 x 2 y
+	    // move 1 0
+	    // går 1 x 0 y
+	    int x = 0, y = 0;
 
-	    // TODO kräver korrekt data..
-	    System.out.println("Client: " + ID + " move " + input[1] + ", "
-		    + input[2]);
-	    move(ID, Integer.parseInt(input[1]), Integer.parseInt(input[2]));
-	    return "done";
+	    try {
+		x = Integer.parseInt(input[1]);
+		y = Integer.parseInt(input[2]);
+
+	    } catch (Exception e) {
+		System.err
+			.println("game.Act( move ): Problem conv from string to int. Wrong parameters? input: "
+				+ input.toString());
+
+	    }
+
+	    // Check that abs(x) + abs(y) <= 1
+	    if (Math.abs(x) + Math.abs(y) <= 1) {
+		System.out.println("Client: " + ID + " move " + input[1] + ", "
+			+ input[2]);
+		move(ID, Integer.parseInt(input[1]), Integer.parseInt(input[2]));
+		return "Done";
+	    } else {
+		return "Failed Error 1"; //Error 1 = för långt steg?
+	    }
+
 	}
 	return "";
     }
@@ -52,7 +69,8 @@ public class Game implements Runnable {
     }
 
     private int getConnectedPlayers() {
-	if (DBG) System.out.println("GameHash: " + this.hashCode());
+	if (DBG)
+	    System.out.println("GameHash: " + this.hashCode());
 	return players.size();
     }
 
@@ -65,14 +83,15 @@ public class Game implements Runnable {
     }
 
     public boolean hasCommand(String input) {
-	if ( input.contains(" ") ) {
+	if (input.contains(" ")) {
 	    String input2[] = input.split(" ");
-	    if (DBG) System.out.println("Lenght of split input" + input2.length);
+	    if (DBG)
+		System.out.println("Lenght of split input" + input2.length);
 	    if (this.commands.contains(input2[0])) {
-		return true;    
-	    }   
+		return true;
+	    }
 	}
-	
+
 	return false;
     }
 
@@ -95,12 +114,13 @@ public class Game implements Runnable {
     }
 
     public void printMap() {
-	
+
 	int mapX = theMap.getX();
 	int mapY = theMap.getY();
 
-	if (DBG) System.out.println("0,0 busy? " + isBusy(0, 0) + " "
-		+ getConnectedPlayers());
+	if (DBG)
+	    System.out.println("0,0 busy? " + isBusy(0, 0) + " "
+		    + getConnectedPlayers());
 	System.out.println("");
 	System.out.println("A map!");
 	for (int i = 0; i < mapX; i++) {
@@ -128,8 +148,10 @@ public class Game implements Runnable {
 	while (running) {
 	    try {
 		Thread.sleep(4000);
+		///update GUI Map?
 		printMap();
-		if (DBG) System.out.println("GameHash: " + this.hashCode());
+		if (DBG)
+		    System.out.println("GameHash: " + this.hashCode());
 		// System.out.println("500 more!");
 		// här rör vi alla object, t ex om vi ska ha motståndarde så kan de röras här. dvs efter varje sleep så
 		// gör dom sitt move.

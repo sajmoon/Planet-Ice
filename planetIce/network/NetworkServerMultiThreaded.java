@@ -112,4 +112,10 @@ public class NetworkServerMultiThreaded implements Runnable {
 	return this.clients.size();
     }
 
+    public String sendToAll(String string) {
+	// TODO Auto-generated method stub
+	
+	return null;
+    }
+
 }
