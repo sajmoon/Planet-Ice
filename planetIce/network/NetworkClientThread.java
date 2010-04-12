@@ -58,7 +58,7 @@ public class NetworkClientThread implements Runnable {
 	// pw.write(text);
 	pw.println(text);
 
-	try {
+	/*try {
 	    String serverMessage = br.readLine();
 	    if (serverMessage == null) {
 		// user typ disconnectade
@@ -74,7 +74,7 @@ public class NetworkClientThread implements Runnable {
 	    System.err.println("NetworkClientThread.sendToServer(String): "
 		    + e.toString());
 	    e.printStackTrace();
-	}
+	}*/
     }
 
     /**
@@ -88,7 +88,7 @@ public class NetworkClientThread implements Runnable {
 	    if (input == null) {
 		// user typ disconnectade
 	    } else {
-		pw.println(planetIce.network.Validation.getChecksum(input));
+	//	pw.println(planetIce.network.Validation.getChecksum(input));
 		return input;
 	    }
 	} catch (IOException e) {

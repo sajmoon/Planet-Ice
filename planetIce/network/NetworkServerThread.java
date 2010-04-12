@@ -45,8 +45,8 @@ public class NetworkServerThread implements Runnable {
 
 	    } else {
 		// System.out.println("Got text bitch!! (" + inputText + ")");
-		output.println(planetIce.network.Validation
-			.getChecksum(inputText));
+		//output.println(planetIce.network.Validation
+		//	.getChecksum(inputText));
 		// System.out.println("Sent response");
 		return inputText;
 	    }
@@ -133,22 +133,22 @@ public class NetworkServerThread implements Runnable {
 	    System.err
 		    .println("NetworkServerThread().send() no text. text == null");
 	} else {
-	    String checksum = planetIce.network.Validation.getChecksum(text);
+	   // String checksum = planetIce.network.Validation.getChecksum(text);
 
 	    output.println(text);
-	    try {
-		String serverMessage = input.readLine();
-		String serverChecksum = serverMessage;
-		if (!serverChecksum.equals(checksum)) {
-		    throw new ProtocolException(
-			    "Not all data reached the server");
-		}
+	    //try {
+		//String serverMessage = input.readLine();
+		//String serverChecksum = serverMessage;
+		//if (!serverChecksum.equals(checksum)) {
+	//    throw new ProtocolException(
+	//		    "Not all data reached the server");
+	//	}
 
-	    } catch (Exception e) {
-		System.err.println("NetworkClientThread.sendToServer(String): "
-			+ e.toString());
-		e.printStackTrace();
-	    }
+	//    } catch (Exception e) {
+	//	System.err.println("NetworkClientThread.sendToServer(String): "
+	//		+ e.toString());
+	//	e.printStackTrace();
+	  //  }
 	}
     }
 }
