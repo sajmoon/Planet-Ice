@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Queue;
+import java.util.Random;
 
 /**
 
@@ -24,6 +24,10 @@ public class NetConnection implements Runnable {
 		this.server = server;
 		try {
 			output = new PrintWriter(clientSocket.getOutputStream(), true);
+			
+			//det första som skickas till clienten är dess nya id.
+			int i = (new Random()).nextInt(); 
+			output.println(i);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("error seting up a new pw NetConnection");

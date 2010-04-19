@@ -10,10 +10,11 @@ import java.net.Socket;
 public class NetworkClientThread implements Runnable {
 
 	Socket clientSocket;
-	int serverPort = 1236; // standard port
+	int serverPort = planetIce.conf.conf.port; // standard port
 	PrintWriter pw = null; // socket output to server
 	BufferedReader br = null; // socket input from server
-
+	String id = "";
+	
 	public NetworkClientThread(int port) {
 		serverPort = port;
 		openClientSocket();
@@ -21,6 +22,8 @@ public class NetworkClientThread implements Runnable {
 			pw = new PrintWriter(clientSocket.getOutputStream(), true);
 			br = new BufferedReader(new InputStreamReader(clientSocket
 					.getInputStream()));
+			id =  br.readLine() ;
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -55,7 +58,7 @@ public class NetworkClientThread implements Runnable {
 	 */
 	public synchronized void send(String text)
 			throws java.net.ProtocolException {
-		pw.println(text);
+		pw.println(id + " " + text);
 	}
 
 	private void openClientSocket() {
