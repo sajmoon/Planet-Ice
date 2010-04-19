@@ -1,0 +1,12 @@
+package planetIce.network;
+
+public class DataPackage {
+
+    private String text;
+    private String client;
+    
+    public DataPackage(String text, String client) {
+	this.text = text;
+	this.client = client;
+    }
+}

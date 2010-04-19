@@ -5,7 +5,7 @@ import java.net.ProtocolException;
 import junit.framework.TestCase;
 import planetIce.Game.Game;
 import planetIce.network.NetworkClientThread;
-import planetIce.network.NetworkServerMultiThreaded;
+import planetIce.network.old.NetworkServerMultiThreaded;
 
 public class TestNetwork extends TestCase {
 

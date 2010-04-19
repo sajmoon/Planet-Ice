@@ -1,51 +1,52 @@
 package planetIce;
 
 import planetIce.Game.Game;
-import planetIce.network.NetworkServerMultiThreaded;
+import planetIce.network.MultiThreadedServer;
 
 public class PlanetIceServer {
 
-    NetworkServerMultiThreaded server;
-    Game game;
-    int serverPort = 1234;;
-    Game serverGame;
+	MultiThreadedServer server;
+	Game game;
+	int serverPort = 1234;;
+	Game serverGame;
 
-    /**
-     * Starts a server
-     */
-    public PlanetIceServer() {
-	long startTime = System.currentTimeMillis();
-	System.out.println("PlanetIceServer");
-	System.out.println("Starting..");
-	server = null;
+	/**
+	 * Starts a server
+	 */
+	public PlanetIceServer() {
+		long startTime = System.currentTimeMillis();
+		System.out.println("PlanetIceServer");
+		System.out.println("Starting..");
+		server = null;
 
-	GamePlay();
-	
-	Networks();
-	
-	long endTime = System.currentTimeMillis();
-	
-	System.out.println("Up and running. Total time to start: " + (endTime - startTime ) +"ms");
-	System.out.println("Servern körs på port "  + server.getServerPort() + "\n");
-	
-    }
+		// GamePlay();
 
-    private void GamePlay() {
-	game = new Game();
-	Thread t = new Thread(game);
-	t.start();
-    }
+		Networks();
+		System.out.println("Test");
+		long endTime = System.currentTimeMillis();
 
-    private void Networks() {
-	// Starta nät-trådar.
-	try {
-	    serverGame = new Game();
-	    server = new NetworkServerMultiThreaded(serverPort, serverGame);
-	    Thread t = new Thread(server);
-	    t.start();
-	    System.out.println("Server up and running in a fucking thread.");
-	} catch (Exception e) {
-	    e.printStackTrace();
+		System.out.println("Up and running. Total time to start: "
+				+ (endTime - startTime) + "ms");
+		System.out.println("Servern körs på port " + server.getListenPort()
+				+ "\n");
+
 	}
-    }
+
+	/*
+	 * private void GamePlay() { game = new Game(); Thread t = new Thread(game);
+	 * t.start(); }
+	 */
+
+	private void Networks() {
+		// Starta nät-trådar.
+		try {
+			// serverGame = new Game();
+			server = new MultiThreadedServer(serverPort);
+			Thread t = new Thread(server);
+			t.start();
+			System.out.println("Server up and running in a fucking thread.");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

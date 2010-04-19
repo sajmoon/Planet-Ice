@@ -2,7 +2,7 @@ package planetIce.test;
 
 import junit.framework.TestCase;
 import planetIce.Game.Game;
-import planetIce.network.PlanetIceServerProtocol;
+import planetIce.network.old.PlanetIceServerProtocol;
 
 public class ProtocolTest extends TestCase {
 
